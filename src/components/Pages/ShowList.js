@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const List = () => {
-  const [data, setData] = useState([]); // 데이터 상태
-  const [isDataLoaded, setIsDataLoaded] = useState(false); // 데이터 로드 여부
+  const [data, setData] = useState([]); 
+  const [isDataLoaded, setIsDataLoaded] = useState(false); 
   const navigate = useNavigate();
 
   const apiUrl = "https://672819d3270bd0b975545f98.mockapi.io/api/vi/users";
 
-  // 데이터 로드 함수
   const fetchData = async () => {
     try {
       const response = await fetch(apiUrl);
@@ -21,29 +20,25 @@ const List = () => {
     }
   };
 
-  // 데이터 삭제 함수
   const deleteUser = async (id) => {
     try {
       const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("삭제 실패");
       alert("삭제 성공");
-      fetchData(); // 삭제 후 목록 새로고침
+      fetchData();
     } catch (error) {
       alert(error.message);
     }
   };
 
-  // 상세 페이지로 이동
   const goToDetail = (id) => {
     navigate(`/detail?id=${id}`);
   };
 
-  // 수정 페이지로 이동
   const goToUpdate = (id) => {
     navigate(`/update?id=${id}`);
   };
 
-  // 추가 페이지로 이동
   const goToCreate = () => {
     navigate(`/create`);
   };

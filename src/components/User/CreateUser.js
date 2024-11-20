@@ -13,7 +13,6 @@ const CreateUser = () => {
   const apiUrl = "https://672819d3270bd0b975545f98.mockapi.io/api/vi/users";
   const navigate = useNavigate();
 
-  // 유효성 체크를 위한 useRef
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const birthDateRef = useRef();
