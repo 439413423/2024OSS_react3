@@ -16,11 +16,16 @@ const List = () => {
       setData(result);
       setIsDataLoaded(true);
     } catch (error) {
+      console.error("Error:", error);
       alert(error.message);
     }
   };
 
   const goToUpdate = (id) => {
+    if (!id) {
+      alert("유효하지 않은 사용자 ID입니다.");
+      return;
+    }
     navigate(`/update?id=${id}`);
   };
 
@@ -34,23 +39,27 @@ const List = () => {
       <br />
       <h2>회원 목록</h2>
       {isDataLoaded ? (
-        <div id="data-list">
-          {data.map((user) => (
-            <div key={user.id} className="mb-3">
-              <span>
-                {`ID: ${user.id}, 이름: ${user.firstName}, 성: ${user.lastName}`}
-              </span>
-              <button
-                className="btn btn-link"
-                onClick={() => goToUpdate(user.id)}
-              >
-                수정
-              </button>
-            </div>
-          ))}
-        </div>
+        data.length > 0 ? (
+          <div id="data-list">
+            {data.map((user) => (
+              <div key={user.id} className="mb-3">
+                <span>
+                  {`ID: ${user.id}, 이름: ${user.firstName}, 성: ${user.lastName}`}
+                </span>
+                <button
+                  className="btn btn-link"
+                  onClick={() => goToUpdate(user.id)}
+                >
+                  수정
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>데이터가 없습니다.</p>
+        )
       ) : (
-        <p>데이터가 로드 안됨.</p>
+        <p>데이터가 로드되지 않았습니다.</p>
       )}
     </div>
   );
