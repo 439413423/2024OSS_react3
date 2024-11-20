@@ -19,6 +19,7 @@ const EditUser = () => {
   const lastNameRef = useRef();
   const birthDateRef = useRef();
 
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -33,52 +34,23 @@ const EditUser = () => {
     fetchUser();
   }, [apiUrl]);
 
-  const handleChange = (e) => {
+
+  const handleChange = async (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
-  const validateInput = () => {
-    if (!formData.firstName) {
-      alert("이름을 입력하세요.");
-      firstNameRef.current.focus();
-      return false;
-    }
-    if (!formData.lastName) {
-      alert("성을 입력하세요.");
-      lastNameRef.current.focus();
-      return false;
-    }
-    if (!formData.birthDate) {
-      alert("생년월일을 입력하세요.");
-      birthDateRef.current.focus();
-      return false;
-    }
-    return true;
-  };
-
-  const handleUpdate = async () => {
-    if (!validateInput()) return;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setEditCount((prev) => prev + 1);
 
     try {
       const response = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, [name]: value }),
       });
       if (!response.ok) throw new Error("수정 실패");
-      alert("수정 성공");
-
-      setEditCount((prev) => prev + 1);
-
-      navigate("/list");
     } catch (error) {
       alert(error.message);
     }
-  };
-
-  const handleCancel = () => {
-    navigate("/list");
   };
 
   return (
@@ -145,11 +117,8 @@ const EditUser = () => {
         <label>수정 횟수:</label>
         <p>{editCount}번</p>
       </div>
-      <button className="btn btn-primary me-2" onClick={handleUpdate}>
-        확인
-      </button>
-      <button className="btn btn-secondary" onClick={handleCancel}>
-        취소
+      <button className="btn btn-secondary" onClick={() => navigate("/list")}>
+        목록으로 돌아가기
       </button>
     </div>
   );
