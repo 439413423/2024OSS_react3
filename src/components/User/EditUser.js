@@ -20,6 +20,7 @@ const EditUser = () => {
   const lastNameRef = useRef();
   const birthDateRef = useRef();
 
+  // 사용자 데이터 가져오기
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -58,6 +59,7 @@ const EditUser = () => {
     return true;
   };
 
+  // 확인 버튼: 수정 내용 저장 및 목록으로 이동
   const handleUpdate = async () => {
     if (!validateInput()) return;
 
@@ -69,12 +71,18 @@ const EditUser = () => {
       });
       if (!response.ok) throw new Error("수정 실패");
       alert("수정 성공");
-      setEditCount((prev) => prev + 1); // 수정 횟수 증가
+
+      // 수정 횟수 증가
+      setEditCount((prev) => prev + 1);
+
+      // 데이터 목록 페이지로 이동
+      navigate("/list");
     } catch (error) {
       alert(error.message);
     }
   };
 
+  // 취소 버튼: 목록으로 돌아가기
   const handleCancel = () => {
     navigate("/list");
   };
