@@ -9,14 +9,13 @@ const EditUser = () => {
     gender: "남",
     nationality: "내국인",
   });
-  const [editCount, setEditCount] = useState(0); // 총 수정 횟수
+  const [editCount, setEditCount] = useState(0); 
   const [searchParams] = useSearchParams();
   const userId = searchParams.get("id");
   const apiUrl = `https://672819d3270bd0b975545f98.mockapi.io/api/vi/users/${userId}`;
   const firstNameRef = useRef();
   const lastNameRef = useRef();
 
-  // 초기 데이터 로드
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -24,7 +23,7 @@ const EditUser = () => {
         if (!response.ok) throw new Error("사용자 데이터 로드 실패");
         const result = await response.json();
         setFormData(result);
-        firstNameRef.current.focus(); // 페이지 로드 후 첫 번째 입력 필드에 포커스
+        firstNameRef.current.focus(); 
       } catch (error) {
         alert(error.message);
       }
@@ -32,14 +31,13 @@ const EditUser = () => {
     fetchUser();
   }, [apiUrl]);
 
-  // onChange 이벤트로 즉시 수정
+
   const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setEditCount((prev) => prev + 1); // 수정 횟수 증가
+    setEditCount((prev) => prev + 1);
 
     try {
-      // API 호출
       const response = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -51,7 +49,6 @@ const EditUser = () => {
     }
   };
 
-  // 유효성 체크 로직
   const validateInput = () => {
     if (!formData.firstName) {
       alert("이름을 입력하세요.");
