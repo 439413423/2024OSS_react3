@@ -13,6 +13,7 @@ const CreateUser = () => {
   const apiUrl = "https://672819d3270bd0b975545f98.mockapi.io/api/vi/users";
   const navigate = useNavigate();
 
+  // 유효성 체크를 위한 useRef
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const birthDateRef = useRef();
@@ -55,6 +56,10 @@ const CreateUser = () => {
     } catch (error) {
       alert(error.message);
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/list");
   };
 
   return (
@@ -117,8 +122,11 @@ const CreateUser = () => {
           <option value="외국인">외국인</option>
         </select>
       </div>
-      <button className="btn btn-primary" onClick={handleSubmit}>
+      <button className="btn btn-primary me-2" onClick={handleSubmit}>
         저장하기
+      </button>
+      <button className="btn btn-secondary" onClick={handleCancel}>
+        취소하기
       </button>
     </div>
   );

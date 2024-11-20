@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const EditUser = () => {
   const [formData, setFormData] = useState({
@@ -9,11 +9,13 @@ const EditUser = () => {
     gender: "남",
     nationality: "내국인",
   });
-  const [editCount, setEditCount] = useState(0);
+  const [editCount, setEditCount] = useState(0); // 수정 횟수
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const userId = searchParams.get("id");
   const apiUrl = `https://672819d3270bd0b975545f98.mockapi.io/api/vi/users/${userId}`;
 
+  // 유효성 체크를 위한 useRef
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const birthDateRef = useRef();
@@ -32,22 +34,49 @@ const EditUser = () => {
     fetchUser();
   }, [apiUrl]);
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setEditCount((prev) => prev + 1);
+  const validateInput = () => {
+    if (!formData.firstName) {
+      alert("이름을 입력하세요.");
+      firstNameRef.current.focus();
+      return false;
+    }
+    if (!formData.lastName) {
+      alert("성을 입력하세요.");
+      lastNameRef.current.focus();
+      return false;
+    }
+    if (!formData.birthDate) {
+      alert("생년월일을 입력하세요.");
+      birthDateRef.current.focus();
+      return false;
+    }
+    return true;
+  };
+
+  const handleUpdate = async () => {
+    if (!validateInput()) return;
 
     try {
       const response = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, [name]: value }),
+        body: JSON.stringify(formData),
       });
       if (!response.ok) throw new Error("수정 실패");
+      alert("수정 성공");
+      setEditCount((prev) => prev + 1); // 수정 횟수 증가
     } catch (error) {
       alert(error.message);
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/list");
   };
 
   return (
@@ -114,6 +143,12 @@ const EditUser = () => {
         <label>수정 횟수:</label>
         <p>{editCount}번</p>
       </div>
+      <button className="btn btn-primary me-2" onClick={handleUpdate}>
+        확인
+      </button>
+      <button className="btn btn-secondary" onClick={handleCancel}>
+        취소
+      </button>
     </div>
   );
 };
