@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-const CreateUser = ({ onClose, onRefresh }) => {
+const CreateUser = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -8,18 +9,15 @@ const CreateUser = ({ onClose, onRefresh }) => {
     gender: "남",
     nationality: "내국인",
   });
-
   const apiUrl = "https://672819d3270bd0b975545f98.mockapi.io/api/vi/users";
   const firstNameRef = useRef();
-  const lastNameRef = useRef();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
-    if (!validateInput()) return;
-
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -28,90 +26,35 @@ const CreateUser = ({ onClose, onRefresh }) => {
       });
       if (!response.ok) throw new Error("추가 실패");
       alert("추가 성공");
-      onRefresh();
-      onClose();
+      navigate("/list");
     } catch (error) {
       alert(error.message);
     }
   };
 
-  const validateInput = () => {
-    if (!formData.firstName) {
-      alert("이름을 입력하세요.");
-      firstNameRef.current.focus();
-      return false;
-    }
-    if (!formData.lastName) {
-      alert("성을 입력하세요.");
-      lastNameRef.current.focus();
-      return false;
-    }
-    return true;
-  };
-
   return (
-    <div className="modal fade show d-block" tabIndex="-1" role="dialog">
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">데이터 추가</h5>
-            <button type="button" className="btn-close" onClick={onClose}></button>
-          </div>
-          <div className="modal-body">
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              placeholder="이름"
-              className="form-control mb-2"
-              ref={firstNameRef}
-            />
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              placeholder="성"
-              className="form-control mb-2"
-              ref={lastNameRef}
-            />
-            <input
-              type="date"
-              name="birthDate"
-              value={formData.birthDate}
-              onChange={handleChange}
-              className="form-control mb-2"
-            />
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className="form-control mb-2"
-            >
-              <option value="남">남</option>
-              <option value="여">여</option>
-            </select>
-            <select
-              name="nationality"
-              value={formData.nationality}
-              onChange={handleChange}
-              className="form-control mb-2"
-            >
-              <option value="내국인">내국인</option>
-              <option value="외국인">외국인</option>
-            </select>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={onClose}>
-              닫기
-            </button>
-            <button type="button" className="btn btn-primary" onClick={handleSubmit}>
-              저장하기
-            </button>
-          </div>
-        </div>
-      </div>
+    <div className="container">
+      <h1>데이터 추가</h1>
+      <input
+        type="text"
+        name="firstName"
+        placeholder="이름"
+        value={formData.firstName}
+        onChange={handleChange}
+        ref={firstNameRef}
+        className="form-control mb-2"
+      />
+      <input
+        type="text"
+        name="lastName"
+        placeholder="성"
+        value={formData.lastName}
+        onChange={handleChange}
+        className="form-control mb-2"
+      />
+      <button className="btn btn-primary" onClick={handleSubmit}>
+        추가
+      </button>
     </div>
   );
 };
