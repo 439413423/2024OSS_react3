@@ -15,6 +15,7 @@ const EditUser = () => {
   const userId = searchParams.get("id");
   const apiUrl = `https://672819d3270bd0b975545f98.mockapi.io/api/vi/users/${userId}`;
 
+
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const birthDateRef = useRef();
@@ -41,6 +42,7 @@ const EditUser = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setEditCount((prev) => prev + 1);
 
+
     try {
       const response = await fetch(apiUrl, {
         method: "PUT",
@@ -51,6 +53,32 @@ const EditUser = () => {
     } catch (error) {
       alert(error.message);
     }
+  };
+
+
+  const validateInput = () => {
+    if (!formData.firstName) {
+      alert("이름을 입력하세요.");
+      firstNameRef.current.focus();
+      return false;
+    }
+    if (!formData.lastName) {
+      alert("성을 입력하세요.");
+      lastNameRef.current.focus();
+      return false;
+    }
+    if (!formData.birthDate) {
+      alert("생년월일을 입력하세요.");
+      birthDateRef.current.focus();
+      return false;
+    }
+    return true;
+  };
+
+
+  const handleNavigateBack = () => {
+    if (!validateInput()) return; 
+    navigate("/list");
   };
 
   return (
@@ -117,7 +145,7 @@ const EditUser = () => {
         <label>수정 횟수:</label>
         <p>{editCount}번</p>
       </div>
-      <button className="btn btn-secondary" onClick={() => navigate("/list")}>
+      <button className="btn btn-secondary" onClick={handleNavigateBack}>
         목록으로 돌아가기
       </button>
     </div>
