@@ -1,25 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from "react";
 
 const CreateUser = ({ onClose, onRefresh }) => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    birthDate: '',
-    gender: '남',
-    nationality: '내국인',
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+    gender: "남",
+    nationality: "내국인",
   });
 
   const apiUrl = "https://672819d3270bd0b975545f98.mockapi.io/api/vi/users";
+  const firstNameRef = useRef();
+  const lastNameRef = useRef();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
+    if (!validateInput()) return;
+
     try {
       const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       if (!response.ok) throw new Error("추가 실패");
@@ -31,6 +35,20 @@ const CreateUser = ({ onClose, onRefresh }) => {
     }
   };
 
+  const validateInput = () => {
+    if (!formData.firstName) {
+      alert("이름을 입력하세요.");
+      firstNameRef.current.focus();
+      return false;
+    }
+    if (!formData.lastName) {
+      alert("성을 입력하세요.");
+      lastNameRef.current.focus();
+      return false;
+    }
+    return true;
+  };
+
   return (
     <div className="modal fade show d-block" tabIndex="-1" role="dialog">
       <div className="modal-dialog" role="document">
@@ -40,21 +58,57 @@ const CreateUser = ({ onClose, onRefresh }) => {
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="이름" className="form-control mb-2" />
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="성" className="form-control mb-2" />
-            <input type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} className="form-control mb-2" />
-            <select name="gender" value={formData.gender} onChange={handleChange} className="form-control mb-2">
+            <input
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              placeholder="이름"
+              className="form-control mb-2"
+              ref={firstNameRef}
+            />
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              placeholder="성"
+              className="form-control mb-2"
+              ref={lastNameRef}
+            />
+            <input
+              type="date"
+              name="birthDate"
+              value={formData.birthDate}
+              onChange={handleChange}
+              className="form-control mb-2"
+            />
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="form-control mb-2"
+            >
               <option value="남">남</option>
               <option value="여">여</option>
             </select>
-            <select name="nationality" value={formData.nationality} onChange={handleChange} className="form-control mb-2">
+            <select
+              name="nationality"
+              value={formData.nationality}
+              onChange={handleChange}
+              className="form-control mb-2"
+            >
               <option value="내국인">내국인</option>
               <option value="외국인">외국인</option>
             </select>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={onClose}>닫기</button>
-            <button type="button" className="btn btn-primary" onClick={handleSubmit}>저장하기</button>
+            <button type="button" className="btn btn-secondary" onClick={onClose}>
+              닫기
+            </button>
+            <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+              저장하기
+            </button>
           </div>
         </div>
       </div>

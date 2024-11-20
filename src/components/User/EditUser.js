@@ -9,12 +9,14 @@ const EditUser = () => {
     gender: "남",
     nationality: "내국인",
   });
-  const [editCount, setEditCount] = useState(0);
+  const [editCount, setEditCount] = useState(0); // 총 수정 횟수
   const [searchParams] = useSearchParams();
   const userId = searchParams.get("id");
   const apiUrl = `https://672819d3270bd0b975545f98.mockapi.io/api/vi/users/${userId}`;
   const firstNameRef = useRef();
+  const lastNameRef = useRef();
 
+  // 초기 데이터 로드
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -22,7 +24,7 @@ const EditUser = () => {
         if (!response.ok) throw new Error("사용자 데이터 로드 실패");
         const result = await response.json();
         setFormData(result);
-        firstNameRef.current.focus();
+        firstNameRef.current.focus(); // 페이지 로드 후 첫 번째 입력 필드에 포커스
       } catch (error) {
         alert(error.message);
       }
@@ -30,12 +32,14 @@ const EditUser = () => {
     fetchUser();
   }, [apiUrl]);
 
+  // onChange 이벤트로 즉시 수정
   const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setEditCount((prev) => prev + 1);
+    setEditCount((prev) => prev + 1); // 수정 횟수 증가
 
     try {
+      // API 호출
       const response = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -45,6 +49,21 @@ const EditUser = () => {
     } catch (error) {
       alert(error.message);
     }
+  };
+
+  // 유효성 체크 로직
+  const validateInput = () => {
+    if (!formData.firstName) {
+      alert("이름을 입력하세요.");
+      firstNameRef.current.focus();
+      return false;
+    }
+    if (!formData.lastName) {
+      alert("성을 입력하세요.");
+      lastNameRef.current.focus();
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -68,6 +87,7 @@ const EditUser = () => {
           name="lastName"
           value={formData.lastName}
           onChange={handleChange}
+          ref={lastNameRef}
           className="form-control"
         />
       </div>
@@ -75,6 +95,14 @@ const EditUser = () => {
         <label>수정 횟수:</label>
         <p>{editCount} 번</p>
       </div>
+      <button
+        className="btn btn-secondary"
+        onClick={() => {
+          if (validateInput()) alert("유효성 검증 완료");
+        }}
+      >
+        유효성 체크
+      </button>
     </div>
   );
 };
