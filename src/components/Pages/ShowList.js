@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // axios 추가
 
 const List = () => {
   const [data, setData] = useState([]); 
@@ -10,10 +11,8 @@ const List = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error("데이터 로드 실패");
-      const result = await response.json();
-      setData(result);
+      const response = await axios.get(apiUrl);
+      setData(response.data);
       setIsDataLoaded(true);
     } catch (error) {
       alert(error.message);
@@ -22,8 +21,8 @@ const List = () => {
 
   const deleteUser = async (id) => {
     try {
-      const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
-      if (!response.ok) throw new Error("삭제 실패");
+      const response = await axios.delete(`${apiUrl}/${id}`); 
+      if (response.status !== 200) throw new Error("삭제 실패");
       alert("삭제 성공");
       fetchData();
     } catch (error) {
@@ -60,7 +59,6 @@ const List = () => {
           <div id="data-list">
             {data.map((user) => (
               <div key={user.id} className="mb-3 d-flex align-items-center">
-             
                 <span
                   onClick={() => goToDetail(user.id)} 
                   style={{ cursor: "pointer", textDecoration: "underline" }}
