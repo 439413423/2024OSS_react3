@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // axios 추가
-
+import axios from "axios"; 
 const List = () => {
   const [data, setData] = useState([]); 
   const [isDataLoaded, setIsDataLoaded] = useState(false); 

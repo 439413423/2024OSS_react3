@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import axios from "axios"; 
 
 const EditUser = () => {
   const [formData, setFormData] = useState({
@@ -15,19 +16,15 @@ const EditUser = () => {
   const userId = searchParams.get("id");
   const apiUrl = `https://672819d3270bd0b975545f98.mockapi.io/api/vi/users/${userId}`;
 
-
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const birthDateRef = useRef();
 
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("사용자 데이터 로드 실패");
-        const result = await response.json();
-        setFormData(result);
+        const response = await axios.get(apiUrl); 
+        setFormData(response.data);
       } catch (error) {
         alert(error.message);
       }
@@ -35,26 +32,18 @@ const EditUser = () => {
     fetchUser();
   }, [apiUrl]);
 
-
   const handleChange = async (e) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({ ...prev, [name]: value }));
     setEditCount((prev) => prev + 1);
 
-
     try {
-      const response = await fetch(apiUrl, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, [name]: value }),
-      });
-      if (!response.ok) throw new Error("수정 실패");
+      await axios.put(apiUrl, { ...formData, [name]: value }); 
     } catch (error) {
       alert(error.message);
     }
   };
-
 
   const validateInput = () => {
     if (!formData.firstName) {
@@ -74,7 +63,6 @@ const EditUser = () => {
     }
     return true;
   };
-
 
   const handleNavigateBack = () => {
     if (!validateInput()) return; 

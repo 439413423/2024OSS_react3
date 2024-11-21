@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; 
 
 const CreateUser = () => {
   const [formData, setFormData] = useState({
@@ -44,12 +45,7 @@ const CreateUser = () => {
     if (!validateInput()) return;
 
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) throw new Error("추가 실패");
+      await axios.post(apiUrl, formData); 
       alert("추가 성공");
       navigate("/list");
     } catch (error) {
