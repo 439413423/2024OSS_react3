@@ -60,15 +60,14 @@ const List = () => {
           <div id="data-list">
             {data.map((user) => (
               <div key={user.id} className="mb-3 d-flex align-items-center">
-                {/* 상세 보기 링크 */}
+             
                 <span
-                  onClick={() => goToDetail(user.id)} // 클릭 시 상세 페이지 이동
+                  onClick={() => goToDetail(user.id)} 
                   style={{ cursor: "pointer", textDecoration: "underline" }}
                 >
                   {`ID: ${user.id}, 이름: ${user.firstName}, 성: ${user.lastName}`}
                 </span>
 
-                {/* 수정 버튼 */}
                 <button
                   className="btn btn-warning ms-2"
                   onClick={() => goToUpdate(user.id)}
@@ -76,7 +75,6 @@ const List = () => {
                   수정
                 </button>
 
-                {/* 삭제 버튼 */}
                 <button
                   className="btn btn-danger ms-2"
                   onClick={() => deleteUser(user.id)}
